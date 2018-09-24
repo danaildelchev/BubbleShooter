@@ -1,0 +1,4 @@
+#Fri Sep 07 12:24:42 PDT 2018
+base.0=/Volumes/unity_projects/test1/Test1/AndroidProject/Test1/build/intermediates/transforms/dexMerger/debug/19
+path.0=classes.dex
+renamed.0=classes.dex
