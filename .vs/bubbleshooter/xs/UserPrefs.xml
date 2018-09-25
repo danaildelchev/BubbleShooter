@@ -1,0 +1,18 @@
+﻿<Properties StartupConfiguration="{C8D40D58-D43F-D41B-4A93-A889587AF809}|">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/QuitScript.cs">
+    <Files>
+      <File FileName="Assets/Scripts/BubbleColor.cs" Line="9" Column="1" />
+      <File FileName="Assets/Scripts/Bubble.cs" Line="112" Column="24" />
+      <File FileName="Assets/Scripts/TouchShooter.cs" Line="10" Column="30" />
+      <File FileName="Assets/Scripts/MapPoint.cs" Line="118" Column="19" />
+      <File FileName="Assets/QuitScript.cs" Line="18" Column="24" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

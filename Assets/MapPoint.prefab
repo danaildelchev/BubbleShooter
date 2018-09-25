@@ -96,7 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d1117171290e4c099934f7edc457c8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Sticky: 0
+  LastLine: 0
+  CurrentBubble: {fileID: 0}
   neighbours: []
 --- !u!135 &135653662169784572
 SphereCollider:

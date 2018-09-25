@@ -12,7 +12,7 @@ public class TouchShooter : MonoBehaviour {
 
     public float BallSpeed = 200.0f;
 
-    public BallBullet[] Balls;
+    public Bubble[] Balls;
 
     // Use this for initialization
     void Start () {
@@ -97,7 +97,7 @@ public class TouchShooter : MonoBehaviour {
     }
 
     private void CreateNewRandomBall() {
-        int ballIdx = Random.Range(0, Balls.Length - 1);
+        int ballIdx = Random.Range(0, Balls.Length);
         GameObject created = Instantiate(Balls[ballIdx].gameObject, newBallPosition.transform.position, transform.rotation);
         newBall = created;
     }
