@@ -18,14 +18,11 @@ public class Bubble : MonoBehaviour {
     private const float DESTROY_FORCE = 200.0f;
     public BubbleShooter.BubbleColor color;
 
-    private Vector3 initialScale;
-
     private Rigidbody rb;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
-        initialScale = transform.localScale;
     }
 	
 	// Update is called once per frame
@@ -40,7 +37,6 @@ public class Bubble : MonoBehaviour {
                 Debug.Log("arrived");
             }
         }
-        AnimateBump();
 	}
 
     private void OnTriggerEnter(Collider other) {
@@ -66,27 +62,6 @@ public class Bubble : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-    }
-
-    public const float BUMP_DURATION = 0.15f;
-    public const float HALF_DURATION = BUMP_DURATION / 2.0f;
-    public const float BUMP_PERCENT = 1.3f;
-    private float startBump;
-
-    public void StartBump() {
-        startBump = Time.time;
-    }
-
-    private void AnimateBump()
-    {
-        if (Time.time > startBump && Time.time < (startBump + BUMP_DURATION)) {
-            if (Time.time < startBump + HALF_DURATION)
-            {
-                transform.localScale = Vector3.Lerp(initialScale, initialScale * BUMP_PERCENT, (Time.time - startBump) / HALF_DURATION);
-            } else {
-                transform.localScale = Vector3.Lerp(initialScale * BUMP_PERCENT, initialScale, (Time.time - (startBump + HALF_DURATION)) / HALF_DURATION);
-            }
-        }
     }
 
     public void DestroyBubble() {

@@ -161,7 +161,7 @@ public class MapPoint : MonoBehaviour {
     void BlinkGroup(List<Bubble> bubbles)
     {
         foreach (Bubble bubble in bubbles) {
-            bubble.StartBump();
+            bubble.GetComponent<BumpAnimation>().StartBump();
         }
     }
 
