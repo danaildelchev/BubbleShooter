@@ -1,2 +1,0 @@
-/Volumes/unity_projects/bubbleshooter/obj/Debug/Assembly-CSharp.csprojAssemblyReference.cache
-/Volumes/unity_projects/bubbleshooter/obj/Debug/Assembly-CSharp.csproj.CoreCompileInputs.cache
