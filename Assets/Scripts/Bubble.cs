@@ -13,7 +13,7 @@ public class Bubble : MonoBehaviour {
 
     public const float DRAG = 20.0f;
     public const float DRAGGED_FORCE = 1000.0f;
-    private readonly float PERCENT_DISTANCE_TO_MAPPOINT = 50;
+    private readonly float PERCENT_DISTANCE_TO_MAPPOINT = 60;
     private readonly float PERCENT_DISTANCE_TO_MAPPOINT_LAST_LINE = 70;
     private const float DESTROY_FORCE = 200.0f;
     public BubbleShooter.BubbleColor color;
@@ -24,20 +24,29 @@ public class Bubble : MonoBehaviour {
 	void Start () {
         rb = GetComponent<Rigidbody>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (hasEndDestination && !arrivedAtEndDestination && !destroyed) {
-            rb.AddForce((CurrentMapPoint.gameObject.transform.position - transform.position) * DRAGGED_FORCE);
-            if ((CurrentMapPoint.transform.position - this.transform.position).sqrMagnitude < 0.001f) {
-                arrivedAtEndDestination = true;
-                rb.mass = 20.0f;
-                rb.velocity = Vector3.zero;
-                transform.position = CurrentMapPoint.transform.position;
-                Debug.Log("arrived");
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (hasEndDestination && !arrivedAtEndDestination && !destroyed)
+        {
+            if (arrivedAtEndDestination) {
+                arrivedAtEndDestination = (CurrentMapPoint.transform.position - this.transform.position).sqrMagnitude > 0.001f;
+            }
+            if (!arrivedAtEndDestination)
+            {
+                rb.AddForce((CurrentMapPoint.gameObject.transform.position - transform.position) * DRAGGED_FORCE);
+                if ((CurrentMapPoint.transform.position - this.transform.position).sqrMagnitude < 0.001f)
+                {
+                    arrivedAtEndDestination = true;
+                    rb.mass = 20.0f;
+                    rb.velocity = Vector3.zero;
+                    transform.position = CurrentMapPoint.transform.position;
+                    Debug.Log("arrived");
+                }
             }
         }
-	}
+    }
 
     private void OnTriggerEnter(Collider other) {
         if (other.GetComponent<MapPoint>() != null)
@@ -60,14 +69,11 @@ public class Bubble : MonoBehaviour {
         }
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-    }
-
     public void DestroyBubble() {
         if (!destroyed)
         {
             destroyed = true;
+            GetComponent<BumpAnimation>().ManageCollider = false;
             GetComponent<Collider>().enabled = false;
             RemoveFromMapPoint();
             Destroy(gameObject, 3.0f);
@@ -82,6 +88,7 @@ public class Bubble : MonoBehaviour {
     }
 
     private void RemoveFromMapPoint() {
+        GetComponent<Collider>().enabled = false;
         rb.velocity = Vector3.zero;
         rb.useGravity = true;
         rb.mass = 1.0f;

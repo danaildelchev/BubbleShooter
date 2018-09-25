@@ -61,15 +61,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\RemoteMapCreator.cs" />
     <Compile Include="Assets\Scripts\Bubble.cs" />
     <Compile Include="Assets\Scripts\BubbleColor.cs" />
     <Compile Include="Assets\Scripts\BumpAnimation.cs" />
+    <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MapPoint.cs" />
     <Compile Include="Assets\Scripts\old\BounceOnTouch.cs" />
     <Compile Include="Assets\Scripts\old\CubeScript.cs" />
     <Compile Include="Assets\Scripts\QuitScript.cs" />
     <Compile Include="Assets\Scripts\ScoreCounter.cs" />
-    <Compile Include="Assets\Scripts\TouchShooter.cs" />
+    <Compile Include="Assets\Scripts\ScoreManager.cs" />
+    <Compile Include="Assets\Scripts\Shooter.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>/Volumes/unity_projects/bubbleshooter/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

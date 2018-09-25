@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MapPoint : MonoBehaviour {
 
-    private const bool DEBUG = false;
+    private const bool DEBUG = true;
 
     public const float DISTANCE_BETWEEN_MAP_POINTS = 0.5f;
     public const int MAX_SIZE_GROUP = 4;
@@ -15,6 +15,7 @@ public class MapPoint : MonoBehaviour {
     public Bubble CurrentBubble = null;
     public readonly List<Bubble> NeighbourBubbles = new List<Bubble>();
 
+    private int currentScorePerBall;
 
     public List<MapPoint> neighbours = new List<MapPoint>();
 
@@ -39,9 +40,10 @@ public class MapPoint : MonoBehaviour {
                         go.transform.position = this.transform.position;
                         LineRenderer line = go.AddComponent<LineRenderer>();
                         // Set the width of the Line Renderer
-                        line.SetWidth(0.01F, 0.01F);
+                        line.startWidth = 0.01F;
+                        line.endWidth = 0.01F;
                         // Set the number of vertex fo the Line Renderer
-                        line.SetVertexCount(2);
+                        line.positionCount = 2;
                         line.SetPosition(0, this.transform.position);
                         line.SetPosition(1, mp.gameObject.transform.position);
                     }
@@ -51,6 +53,8 @@ public class MapPoint : MonoBehaviour {
     }
 
     public void BallAdded(Bubble bubble) {
+        currentScorePerBall = Main.main.ScorePerBall;
+
         CurrentBubble = bubble;
         MakeNeighborsSticky(bubble);
         CheckNeighbouringBubbles();
@@ -85,12 +89,12 @@ public class MapPoint : MonoBehaviour {
             BlinkGroup(bubbles);
         }
         if (group.Count >= MAX_SIZE_GROUP) {
-            CheckForRootAccessAfterDestruction(group);
+            CheckNeighboursForRootAccessAfterDestruction(group);
             DestroyGroup(bubbles);
         }
     }
 
-    private void CheckForRootAccessAfterDestruction(List<MapPoint> groupToBeDestroyed)
+    private void CheckNeighboursForRootAccessAfterDestruction(List<MapPoint> groupToBeDestroyed)
     {
         List<List<Bubble>> graphs = new List<List<Bubble>>();
         foreach (MapPoint mpToBeDestroyed in groupToBeDestroyed) {
@@ -109,23 +113,15 @@ public class MapPoint : MonoBehaviour {
                 }
             }
         }
-        Color[] colors = new Color[] { Color.red, Color.black, Color.green, Color.blue, Color.yellow };
-        int i = 0;
         foreach (List<Bubble> bubbles in graphs) {
             bool hasRootAccess = false;
 
             foreach(Bubble bubble in bubbles) {
-                //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                // color is controlled like this
-                //cube.GetComponent<Renderer>().material.color = colors[i];
-                //cube.transform.position = bubble.transform.position;
-                //cube.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
                 if (bubble.CurrentMapPoint.LastLine){
                     hasRootAccess = true;
                     break;
                 }
             }
-            i++;
             if (!hasRootAccess) {
                 DestroyGroup(bubbles);
             }
@@ -170,6 +166,8 @@ public class MapPoint : MonoBehaviour {
             foreach (Bubble bubble in bubbles)
         {
             bubble.DestroyBubble();
+            Main.main.scoreManager.AddScore(bubble, currentScorePerBall);
+            currentScorePerBall += Main.main.IncrementOfScorePerBall;
         }
     }
 

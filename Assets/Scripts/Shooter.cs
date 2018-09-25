@@ -2,24 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TouchShooter : MonoBehaviour {
+public class Shooter : MonoBehaviour {
 
     public Camera mainCamera;
     public Plane hitPlane;
 
-    public GameObject newBall;
     public GameObject newBallPosition;
 
     public float BallSpeed = 200.0f;
 
     public Bubble[] Balls;
 
+    GameObject newBall;
+
+    public BubbleShooter.BubbleColor[] NextBallsColors = {
+        BubbleShooter.BubbleColor.YELLOW,
+        BubbleShooter.BubbleColor.YELLOW,
+        BubbleShooter.BubbleColor.YELLOW,
+        BubbleShooter.BubbleColor.YELLOW,
+        BubbleShooter.BubbleColor.YELLOW};
+    int numberOfBallsCreated = 0;
+    Dictionary<BubbleShooter.BubbleColor, Bubble> ballsPerColor = new Dictionary<BubbleShooter.BubbleColor, Bubble>();
+    
+
     // Use this for initialization
     void Start () {
         hitPlane = new Plane(
             Vector3.zero, Vector3.up, Vector3.right);
 
-        CreateNewRandomBall();
+        foreach (Bubble bubble in Balls) {
+            ballsPerColor.Add(bubble.color, bubble);
+        }
+
+        CreateNewBall();
 	}
 
     Vector2 touchPos;
@@ -93,12 +108,22 @@ public class TouchShooter : MonoBehaviour {
 
     private IEnumerator CreateNewBallDelayed() {
         yield return new WaitForSeconds(0.5f);
-        CreateNewRandomBall();
+        CreateNewBall();
     }
 
-    private void CreateNewRandomBall() {
-        int ballIdx = Random.Range(0, Balls.Length);
-        GameObject created = Instantiate(Balls[ballIdx].gameObject, newBallPosition.transform.position, transform.rotation);
+    private void CreateNewBall() {
+        GameObject nextBall;
+        if (numberOfBallsCreated < NextBallsColors.Length)
+        {
+            nextBall = ballsPerColor[NextBallsColors[numberOfBallsCreated]].gameObject;
+        }
+        else
+        {
+            int ballIdx = Random.Range(0, Balls.Length);
+            nextBall = Balls[ballIdx].gameObject;
+        }
+        GameObject created = Instantiate(nextBall, newBallPosition.transform.position, transform.rotation);
         newBall = created;
+        numberOfBallsCreated++;
     }
 }
