@@ -39,7 +39,7 @@ public class BumpAnimation : MonoBehaviour
 
     private void AnimateBump()
     {
-        if (Time.time > startBump && Time.time < (startBump + BUMP_DURATION))
+        if (inAnimation && Time.time > startBump && Time.time < (startBump + BUMP_DURATION))
         {
             if (Time.time < startBump + HALF_DURATION)
             {

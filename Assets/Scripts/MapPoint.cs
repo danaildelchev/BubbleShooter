@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,20 +14,26 @@ public class MapPoint : MonoBehaviour {
     public Bubble CurrentBubble = null;
     public readonly List<Bubble> NeighbourBubbles = new List<Bubble>();
 
+    public String ID;
+    public bool IsRemote;
+
     private int currentScorePerBall;
 
     public List<MapPoint> neighbours = new List<MapPoint>();
 
 	// Use this for initialization
 	void Start () {
-        System.Object[] mapPoints = GameObject.FindObjectsOfType(typeof(MapPoint));
+        System.Object[] mapPoints = FindObjectsOfType(typeof(MapPoint));
+        if (IsRemote) {
+                Main.main.RemoteMapRenderer.RemoteMap.Add(this.ID, this);
+        }
         foreach (System.Object o in mapPoints) {
             MapPoint mp = (MapPoint) o;
-            if (mp != this)
+            if (mp != this && mp.IsRemote == this.IsRemote)
             {
-                float distanceSqr = (((MapPoint)mp).gameObject.transform.position - transform.position).sqrMagnitude;
+                float distanceSqr = (mp.gameObject.transform.position - transform.position).sqrMagnitude;
                 if (Math.Sqrt(distanceSqr) < DISTANCE_BETWEEN_MAP_POINTS) {
-                    neighbours.Add((MapPoint)mp);
+                    neighbours.Add(mp);
 
                     if (DEBUG)
                     {
@@ -52,15 +57,24 @@ public class MapPoint : MonoBehaviour {
         }
     }
 
-    public void BallAdded(Bubble bubble) {
+    public void BallAdded(Bubble bubble)
+    {
+        if (!IsRemote)
+        {
+            Main.main.MessageManager.BallAttached(bubble.ID, this.ID);
+        }
         currentScorePerBall = Main.main.ScorePerBall;
 
         CurrentBubble = bubble;
         MakeNeighborsSticky(bubble);
-        CheckNeighbouringBubbles();
+
+        if (!IsRemote)
+        {
+            CheckNeighbouringBubbles();
+        }
     }
 
-    private void CheckNeighbouringBubbles()
+    public void CheckNeighbouringBubbles()
     {
         BubbleShooter.BubbleColor searchedColor = CurrentBubble.color;
         LinkedList<MapPoint> sameColorMapPoints = new LinkedList<MapPoint>();
@@ -89,6 +103,10 @@ public class MapPoint : MonoBehaviour {
             BlinkGroup(bubbles);
         }
         if (group.Count >= MAX_SIZE_GROUP) {
+            if (!IsRemote)
+            {
+                Main.main.MessageManager.DestroyGroup(ID);
+            }
             CheckNeighboursForRootAccessAfterDestruction(group);
             DestroyGroup(bubbles);
         }
@@ -163,10 +181,11 @@ public class MapPoint : MonoBehaviour {
 
     void DestroyGroup(List<Bubble> bubbles)
     {
-            foreach (Bubble bubble in bubbles)
+        foreach (Bubble bubble in bubbles)
         {
             bubble.DestroyBubble();
-            Main.main.scoreManager.AddScore(bubble, currentScorePerBall);
+            ScoreManager scoreManager = IsRemote ? Main.main.remoteScoreManager : Main.main.scoreManager;
+            scoreManager.AddScore(bubble, currentScorePerBall);
             currentScorePerBall += Main.main.IncrementOfScorePerBall;
         }
     }
@@ -189,7 +208,7 @@ public class MapPoint : MonoBehaviour {
         }
     }
 
-    internal void RemoveCurrentBubble()
+    public void RemoveCurrentBubble()
     {
         foreach (MapPoint mp in neighbours) {
             mp.NeighbourBubbles.Remove(CurrentBubble);

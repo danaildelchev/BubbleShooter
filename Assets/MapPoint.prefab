@@ -98,6 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LastLine: 0
   CurrentBubble: {fileID: 0}
+  ID: 
+  IsRemote: 0
   neighbours: []
 --- !u!135 &135653662169784572
 SphereCollider:

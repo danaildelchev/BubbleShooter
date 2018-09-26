@@ -6,6 +6,8 @@ using UnityEngine;
 public class Bubble : MonoBehaviour {
 
     public MapPoint CurrentMapPoint;
+    public String ID;
+    public bool IsRemote;
 
     private bool hasEndDestination;
     private bool arrivedAtEndDestination;
@@ -80,7 +82,10 @@ public class Bubble : MonoBehaviour {
         }
     }
 
-    private void StickToMapPoint(MapPoint mp) {
+    public void StickToMapPoint(MapPoint mp) {
+        if (IsRemote) {
+            GetComponent<Collider>().enabled = false;
+        }
         hasEndDestination = true;
         CurrentMapPoint = mp;
         rb.drag = DRAG;

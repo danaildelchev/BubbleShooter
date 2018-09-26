@@ -11,28 +11,13 @@ public class Shooter : MonoBehaviour {
 
     public float BallSpeed = 200.0f;
 
-    public Bubble[] Balls;
-
     GameObject newBall;
-
-    public BubbleShooter.BubbleColor[] NextBallsColors = {
-        BubbleShooter.BubbleColor.YELLOW,
-        BubbleShooter.BubbleColor.YELLOW,
-        BubbleShooter.BubbleColor.YELLOW,
-        BubbleShooter.BubbleColor.YELLOW,
-        BubbleShooter.BubbleColor.YELLOW};
     int numberOfBallsCreated = 0;
-    Dictionary<BubbleShooter.BubbleColor, Bubble> ballsPerColor = new Dictionary<BubbleShooter.BubbleColor, Bubble>();
-    
 
     // Use this for initialization
     void Start () {
         hitPlane = new Plane(
             Vector3.zero, Vector3.up, Vector3.right);
-
-        foreach (Bubble bubble in Balls) {
-            ballsPerColor.Add(bubble.color, bubble);
-        }
 
         CreateNewBall();
 	}
@@ -66,7 +51,10 @@ public class Shooter : MonoBehaviour {
             }
             if (TouchUp(out touchPos))
             {
-                newBall.GetComponent<Rigidbody>().AddForce((newBall.transform.position - transform.position) * BallSpeed);
+                Vector3 force = (newBall.transform.position - transform.position) * BallSpeed;
+                Main.main.MessageManager.BallShot(newBall.transform.localPosition, force, newBall.GetComponent<Bubble>().ID, newBall.GetComponent<Bubble>().color);
+                
+                newBall.GetComponent<Rigidbody>().AddForce(force);
                 newBall = null;
                 StartCoroutine(CreateNewBallDelayed());
             }
@@ -113,16 +101,18 @@ public class Shooter : MonoBehaviour {
 
     private void CreateNewBall() {
         GameObject nextBall;
-        if (numberOfBallsCreated < NextBallsColors.Length)
+        if (numberOfBallsCreated < Main.main.NextBallsColors.Length)
         {
-            nextBall = ballsPerColor[NextBallsColors[numberOfBallsCreated]].gameObject;
+            nextBall = Main.main.BallsPerColor[Main.main.NextBallsColors[numberOfBallsCreated]].gameObject;
         }
         else
         {
-            int ballIdx = Random.Range(0, Balls.Length);
-            nextBall = Balls[ballIdx].gameObject;
+            int ballIdx = Random.Range(0, Main.main.Balls.Length);
+            nextBall = Main.main.Balls[ballIdx].gameObject;
         }
         GameObject created = Instantiate(nextBall, newBallPosition.transform.position, transform.rotation);
+        created.GetComponent<Bubble>().ID = "id" + numberOfBallsCreated;
+        created.transform.parent = Main.main.LocalMapHolder.transform;
         newBall = created;
         numberOfBallsCreated++;
     }
